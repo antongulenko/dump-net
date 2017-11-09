@@ -8,7 +8,7 @@ import (
 
 	"io/ioutil"
 
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 	"github.com/antongulenko/golib"
 )
 
@@ -19,20 +19,20 @@ func handleTcpConn(_ *sync.WaitGroup, conn *net.TCPConn) {
 	if err != nil {
 		log.Errorf("Error receiving TCP data from %v: %v\n", remote, err)
 	} else {
-		printData(data, remote.String(), "TCP")
+		printData(data, conn.LocalAddr(), remote.String(), "TCP")
 	}
 }
 
-func handleUdpPacket(_ *sync.WaitGroup, remoteAddr *net.UDPAddr, packet []byte) {
-	printData(packet, remoteAddr.String(), "UDP")
+func handleUdpPacket(_ *sync.WaitGroup, localAddr net.Addr, remoteAddr *net.UDPAddr, packet []byte) {
+	printData(packet, localAddr, remoteAddr.String(), "UDP")
 }
 
-func printData(data []byte, remoteAddr string, proto string) {
+func printData(data []byte, localAddr net.Addr, remoteAddr string, proto string) {
 	dataStr := string(data)
 	if len(dataStr) > 0 && dataStr[len(dataStr)-1] == '\n' {
 		dataStr = dataStr[:len(dataStr)-1] // Newline will be added by logger
 	}
-	log.Printf("%v from %v: %v", proto, remoteAddr, dataStr)
+	log.Printf("[%v] Received on %v from %v: %v", proto, localAddr, remoteAddr, dataStr)
 }
 
 func main() {
