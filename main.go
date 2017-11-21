@@ -6,20 +6,24 @@ import (
 	"strconv"
 	"sync"
 
-	"io/ioutil"
+	"bufio"
 
-	log "github.com/sirupsen/logrus"
 	"github.com/antongulenko/golib"
+	log "github.com/sirupsen/logrus"
 )
 
 func handleTcpConn(_ *sync.WaitGroup, conn *net.TCPConn) {
 	remote := conn.RemoteAddr()
 	log.Debugln("Accepted TCP connection from", remote)
-	data, err := ioutil.ReadAll(conn)
-	if err != nil {
-		log.Errorf("Error receiving TCP data from %v: %v\n", remote, err)
-	} else {
-		printData(data, conn.LocalAddr(), remote.String(), "TCP")
+	b := bufio.NewReader(conn)
+	for {
+		line, _, err := b.ReadLine()
+		if err != nil {
+			log.Errorf("Error receiving TCP data from %v: %v\n", remote, err)
+			break
+		} else {
+			printData(line, conn.LocalAddr(), remote.String(), "TCP")
+		}
 	}
 }
 
