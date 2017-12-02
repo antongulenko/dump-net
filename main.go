@@ -36,7 +36,7 @@ func printData(data []byte, localAddr net.Addr, remoteAddr string, proto string)
 	if len(dataStr) > 0 && dataStr[len(dataStr)-1] == '\n' {
 		dataStr = dataStr[:len(dataStr)-1] // Newline will be added by logger
 	}
-	log.Printf("[%v] Received on %v from %v: %v", proto, localAddr, remoteAddr, dataStr)
+	log.Printf("[%v] Received on %v from %v (len %v): %v", proto, localAddr, remoteAddr, len(data), dataStr)
 }
 
 func main() {
