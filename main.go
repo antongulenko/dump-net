@@ -1,12 +1,10 @@
 package main
 
 import (
+	"bufio"
 	"flag"
 	"net"
-	"strconv"
 	"sync"
-
-	"bufio"
 
 	"github.com/antongulenko/golib"
 	log "github.com/sirupsen/logrus"
@@ -65,16 +63,4 @@ func main() {
 		})
 	}
 	tasks.PrintWaitAndStop()
-}
-
-func parsePorts(strings golib.StringSlice) ([]int, error) {
-	res := make([]int, len(strings))
-	for i, str := range strings {
-		port, err := strconv.Atoi(str)
-		if err != nil {
-			return nil, err
-		}
-		res[i] = port
-	}
-	return res, nil
 }
